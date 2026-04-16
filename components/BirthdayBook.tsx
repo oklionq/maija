@@ -85,9 +85,11 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
       setDirection(newDirection);
       setCurrentPage(newPage);
     }
-    if (newPage === pages.length - 1) {
-      setTimeout(() => onComplete(), 2000);
-    }
+  };
+
+  const handleLastPageNext = () => {
+    // Trigger transition to heart phase
+    onComplete();
   };
 
   const variants = {
@@ -106,9 +108,9 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-30 p-4">
-      <div className="relative w-full max-w-4xl aspect-[16/10] perspective-[2000px]">
-        <AnimatePresence initial={false} custom={direction}>
+    <div className="w-full max-w-4xl aspect-[16/10]">
+      <div className="relative w-full h-full perspective-[2000px]">
+        <AnimatePresence initial={false} custom={direction} mode="wait">
           <motion.div
             key={currentPage}
             custom={direction}
@@ -123,6 +125,9 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
             className="absolute inset-0 bg-white rounded-lg shadow-2xl grid grid-cols-1 md:grid-cols-2 overflow-hidden"
             style={{
               transformStyle: "preserve-3d",
+              willChange: "transform, opacity",
+              transform: "translateZ(0)",
+              backfaceVisibility: "hidden",
             }}
           >
             {/* Left Page */}
@@ -142,7 +147,8 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
               <motion.div
                 className="bg-white p-4 shadow-xl"
                 style={{
-                  transform: "rotate(2deg)",
+                  transform: "rotate(2deg) translateZ(0)",
+                  backfaceVisibility: "hidden",
                 }}
                 whileHover={{ scale: 1.05, rotate: 0 }}
               >
@@ -178,6 +184,19 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
           <button
             onClick={() => paginate(1)}
             className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 bg-[#ff3377] text-white p-3 rounded-full shadow-lg hover:scale-110 transition-transform"
+            style={{
+              boxShadow: "0 0 20px #ff3377",
+            }}
+          >
+            <ChevronRight size={24} />
+          </button>
+        )}
+
+        {/* Arrow on last page to go to heart */}
+        {currentPage === pages.length - 1 && (
+          <button
+            onClick={handleLastPageNext}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 bg-[#ff3377] text-white p-3 rounded-full shadow-lg hover:scale-110 transition-transform animate-pulse"
             style={{
               boxShadow: "0 0 20px #ff3377",
             }}

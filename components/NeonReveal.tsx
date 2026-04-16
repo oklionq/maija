@@ -26,6 +26,8 @@ export default function NeonReveal({ onComplete }: NeonRevealProps) {
         className="font-[family-name:var(--font-vt323)] text-[8vw] md:text-[6vw] text-[#ff3377] text-center px-4"
         style={{
           textShadow: "0 0 10px #ff3377, 0 0 20px #ff3377, 0 0 40px #ff3377",
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden",
         }}
       >
         {letters.map((letter, index) => (
@@ -37,7 +39,11 @@ export default function NeonReveal({ onComplete }: NeonRevealProps) {
               duration: 0.5,
               delay: index * 0.05,
             }}
-            style={{ display: "inline-block" }}
+            style={{
+              display: "inline-block",
+              transform: "translateZ(0)",
+              backfaceVisibility: "hidden",
+            }}
           >
             {letter === " " ? "\u00A0" : letter}
           </motion.span>

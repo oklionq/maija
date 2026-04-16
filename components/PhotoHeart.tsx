@@ -10,6 +10,7 @@ interface PhotoHeartProps {
 }
 
 export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
+  const [isReady, setIsReady] = useState(false);
   const [photos] = useState(() => {
     const photoCount = 40;
     const photos: { id: number; x: number; y: number; url: string }[] = [];
@@ -21,8 +22,8 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
 
       photos.push({
         id: i,
-        x: x * 15,
-        y: y * 15,
+        x: x * 15 * 1.5,
+        y: y * 15 * 1.5,
         url: `https://picsum.photos/seed/${i + 100}/100/100`,
       });
     }
@@ -31,7 +32,12 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
   });
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    // Delay animation start to prevent lag - increased to 800ms
+    const readyTimer = setTimeout(() => {
+      setIsReady(true);
+    }, 800);
+
+    const confettiTimer = setTimeout(() => {
       const duration = 3000;
       const animationEnd = Date.now() + duration;
 
@@ -59,39 +65,74 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
         });
       }, 50);
 
+      // Store interval ID for cleanup
       return () => clearInterval(interval);
-    }, 2000);
+    }, 4000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(readyTimer);
+      clearTimeout(confettiTimer);
+    };
   }, []);
 
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        staggerChildren: 0.05,
+      },
+    },
+  };
+
+  const photoVariants = {
+    hidden: { x: 0, y: 0, scale: 0, opacity: 0 },
+    visible: (custom: { x: number; y: number }) => ({
+      x: custom.x,
+      y: custom.y,
+      scale: 1,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 50,
+        damping: 15,
+      },
+    }),
+  };
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-40 overflow-hidden">
+    <motion.div
+      className="fixed inset-0 flex items-center justify-center z-40 overflow-hidden"
+      initial="hidden"
+      animate={isReady ? "visible" : "hidden"}
+      variants={containerVariants}
+      style={{
+        transform: "translateZ(0)",
+        backfaceVisibility: "hidden",
+      }}
+    >
       <div className="relative w-full h-full flex items-center justify-center">
-        {photos.map((photo, index) => (
+        {photos.map((photo) => (
           <motion.div
             key={photo.id}
-            initial={{ x: 0, y: 0, scale: 0, opacity: 0 }}
-            animate={{
-              x: photo.x,
-              y: photo.y,
-              scale: 1,
-              opacity: 1,
-            }}
-            transition={{
-              duration: 1.5,
-              delay: index * 0.03,
-              type: "spring",
-              stiffness: 50,
-              damping: 15,
-            }}
+            custom={{ x: photo.x, y: photo.y }}
+            variants={photoVariants}
             className="absolute"
+            style={{
+              willChange: "transform, opacity",
+              transform: "translateZ(0)",
+              backfaceVisibility: "hidden",
+            }}
           >
             <motion.div
               className="w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden shadow-lg border-2 border-white"
               whileHover={{ scale: 1.5, zIndex: 50 }}
               style={{
-                transform: `rotate(${Math.random() * 20 - 10}deg)`,
+                transform: `rotate(${Math.random() * 20 - 10}deg) translateZ(0)`,
+                willChange: "transform",
+                backfaceVisibility: "hidden",
               }}
             >
               <img
@@ -106,9 +147,13 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
         {/* Center Pulsing Heart */}
         <motion.div
           initial={{ scale: 0 }}
-          animate={{ scale: [0, 1.2, 1] }}
-          transition={{ duration: 1, delay: 1.5 }}
+          animate={{ scale: isReady ? [0, 1.2, 1] : 0 }}
+          transition={{ duration: 1, delay: 2 }}
           className="absolute z-50"
+          style={{
+            transform: "translateZ(0)",
+            backfaceVisibility: "hidden",
+          }}
         >
           <motion.div
             animate={{
@@ -131,6 +176,6 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
           </motion.div>
         </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

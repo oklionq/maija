@@ -8,11 +8,13 @@ interface CountdownProps {
 
 export default function Countdown({ onComplete }: CountdownProps) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-10">
+    <div className="fixed inset-0 flex items-center justify-center z-20">
       <motion.div
         className="font-[family-name:var(--font-vt323)] text-[20vw] text-[#ff3377]"
         style={{
           textShadow: "0 0 20px #ff3377, 0 0 40px #ff3377, 0 0 60px #ff3377",
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden",
         }}
       >
         <motion.div
