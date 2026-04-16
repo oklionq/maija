@@ -7,40 +7,69 @@ interface BootLoaderProps {
   onComplete: () => void;
 }
 
+const loadingMessages = [
+  "INITIALIZING_STARDUST...",
+  "DECRYPTING_MEMORIES...",
+  "LOADING_HEART_MODULES...",
+  "PREPARING_NEON_GLOW...",
+  "CALIBRATING_MATRIX...",
+];
+
 export default function BootLoader({ onComplete }: BootLoaderProps) {
   const [progress, setProgress] = useState(0);
+  const [message, setMessage] = useState(loadingMessages[0]);
+  const [showCursor, setShowCursor] = useState(true);
 
   useEffect(() => {
-    // Simulate realistic boot progress with random chunks
-    const intervals: NodeJS.Timeout[] = [];
-    let currentProgress = 0;
+    // Flickering cursor animation
+    const cursorInterval = setInterval(() => {
+      setShowCursor((prev) => !prev);
+    }, 500);
+
+    // Smooth progress over exactly 4 seconds
+    const timeouts: NodeJS.Timeout[] = [];
+    const totalDuration = 4000; // 4 seconds
+    const updateInterval = 50; // Update every 50ms
+    const totalSteps = totalDuration / updateInterval;
+    let currentStep = 0;
 
     const updateProgress = () => {
-      if (currentProgress >= 100) {
-        intervals.forEach(clearTimeout);
-        // Wait 400ms before transitioning
-        setTimeout(() => {
-          onComplete();
-        }, 400);
-        return;
+      currentStep++;
+      const newProgress = Math.min(100, Math.floor((currentStep / totalSteps) * 100));
+      setProgress(newProgress);
+
+      // Update messages based on progress
+      if (newProgress < 25) {
+        setMessage(loadingMessages[0]);
+      } else if (newProgress < 50) {
+        setMessage(loadingMessages[1]);
+      } else if (newProgress < 75) {
+        setMessage(loadingMessages[2]);
+      } else if (newProgress < 95) {
+        setMessage(loadingMessages[3]);
+      } else {
+        setMessage(loadingMessages[4]);
       }
 
-      // Random increment between 4-15%
-      const increment = Math.floor(Math.random() * 12) + 4;
-      currentProgress = Math.min(100, currentProgress + increment);
-      setProgress(currentProgress);
-
-      // Random delay between 100-300ms for realistic feel
-      const delay = Math.floor(Math.random() * 200) + 100;
-      const timeout = setTimeout(updateProgress, delay);
-      intervals.push(timeout);
+      if (currentStep < totalSteps) {
+        const timeout = setTimeout(updateProgress, updateInterval);
+        timeouts.push(timeout);
+      } else {
+        // Stay at 100% for the full 4 seconds, then transition
+        const timeout = setTimeout(() => {
+          onComplete();
+        }, 0);
+        timeouts.push(timeout);
+      }
     };
 
-    // Start the boot sequence
-    updateProgress();
+    // Start the sequence
+    const startTimeout = setTimeout(updateProgress, 100);
+    timeouts.push(startTimeout);
 
     return () => {
-      intervals.forEach(clearTimeout);
+      clearInterval(cursorInterval);
+      timeouts.forEach(clearTimeout);
     };
   }, [onComplete]);
 
@@ -49,15 +78,15 @@ export default function BootLoader({ onComplete }: BootLoaderProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 1.2 }}
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black"
     >
       <div className="font-mono text-center">
         <div className="text-[#ff3377] text-2xl md:text-3xl mb-4">
-          [ {progress.toString().padStart(3, " ")}% ] SYSTEM_BOOT...
+          [ {progress.toString().padStart(3, " ")}% ]{showCursor ? "_" : " "}
         </div>
         <div className="text-white/60 text-sm md:text-base">
-          Initializing birthday protocol
+          {message}
         </div>
       </div>
     </motion.div>

@@ -114,6 +114,23 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
       }}
     >
       <div className="relative w-full h-full flex items-center justify-center">
+        {/* Large Blurred Pink Radial Gradient (Foggy Neon Atmosphere) */}
+        <div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          style={{
+            background: "radial-gradient(circle, rgba(255, 51, 119, 0.25) 0%, rgba(255, 51, 119, 0.1) 40%, transparent 70%)",
+            filter: "blur(100px)",
+            zIndex: -1,
+          }}
+        />
+
+        {/* Pink Glow Halo Background */}
+        <div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          style={{
+            background: "radial-gradient(circle, rgba(255, 51, 119, 0.15) 0%, transparent 70%)",
+          }}
+        />
         {photos.map((photo) => (
           <motion.div
             key={photo.id}
@@ -127,12 +144,14 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
             }}
           >
             <motion.div
-              className="w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden shadow-lg border-2 border-white"
+              className="w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 border-white"
               whileHover={{ scale: 1.5, zIndex: 50 }}
               style={{
                 transform: `rotate(${Math.random() * 20 - 10}deg) translateZ(0)`,
-                willChange: "transform",
+                willChange: "transform, filter",
                 backfaceVisibility: "hidden",
+                boxShadow: "0 0 5px #ff3377, 0 0 15px rgba(255, 51, 119, 0.5), 0 0 40px rgba(255, 51, 119, 0.2)",
+                filter: "saturate(1.5) brightness(1.1)",
               }}
             >
               <img
@@ -157,7 +176,8 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
         >
           <motion.div
             animate={{
-              scale: [1, 1.2, 1],
+              scale: [1, 1.1, 1],
+              opacity: [0.8, 1, 0.8],
             }}
             transition={{
               duration: 1.5,
@@ -170,7 +190,7 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
               fill="#ff3377"
               color="#ff3377"
               style={{
-                filter: "drop-shadow(0 0 20px #ff3377) drop-shadow(0 0 40px #ff3377)",
+                filter: "drop-shadow(0 0 5px #ff3377) drop-shadow(0 0 15px rgba(255, 51, 119, 0.5)) drop-shadow(0 0 40px rgba(255, 51, 119, 0.2))",
               }}
             />
           </motion.div>
