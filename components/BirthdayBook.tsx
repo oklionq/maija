@@ -4,62 +4,22 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface BookPage {
+interface PhotoCard {
   id: number;
-  leftContent: {
-    text: string;
-  };
-  rightContent: {
-    imageUrl: string;
-  };
+  imageUrl: string;
 }
 
-const pages: BookPage[] = [
-  {
-    id: 1,
-    leftContent: {
-      text: "Dear Maija,\n\nOn this special day, we celebrate the amazing person you are. Your smile lights up every room you enter.",
-    },
-    rightContent: {
-      imageUrl: "/2.jfif",
-    },
-  },
-  {
-    id: 2,
-    leftContent: {
-      text: "Your kindness and warmth touch everyone around you. You make the world a better place just by being in it.",
-    },
-    rightContent: {
-      imageUrl: "/6.jpg",
-    },
-  },
-  {
-    id: 3,
-    leftContent: {
-      text: "Every moment with you is a treasure. Your laughter is contagious and your spirit is inspiring.",
-    },
-    rightContent: {
-      imageUrl: "/3.png",
-    },
-  },
-  {
-    id: 4,
-    leftContent: {
-      text: "May this year bring you endless joy, unforgettable adventures, and all the happiness you deserve.",
-    },
-    rightContent: {
-      imageUrl: "/9.jpg",
-    },
-  },
-  {
-    id: 5,
-    leftContent: {
-      text: "Happy Birthday, Maija!\n\nWith all our love,\nYour friends and family ❤️",
-    },
-    rightContent: {
-      imageUrl: "/5.png",
-    },
-  },
+const photos: PhotoCard[] = [
+  { id: 1, imageUrl: "/2.jfif" },
+  { id: 2, imageUrl: "/6.jpg" },
+  { id: 3, imageUrl: "/3.png" },
+  { id: 4, imageUrl: "/9.jpg" },
+  { id: 5, imageUrl: "/5.png" },
+  { id: 6, imageUrl: "/1.png" },
+  { id: 7, imageUrl: "/4.png" },
+  { id: 8, imageUrl: "/7.jfif" },
+  { id: 9, imageUrl: "/8.jpg" },
+  { id: 10, imageUrl: "/10.png" },
 ];
 
 interface BirthdayBookProps {
@@ -72,182 +32,160 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
 
   const paginate = (newDirection: number) => {
     const newPage = currentPage + newDirection;
-    if (newPage >= 0 && newPage < pages.length) {
+    if (newPage >= 0 && newPage < photos.length) {
       setDirection(newDirection);
       setCurrentPage(newPage);
     }
   };
 
   const handleLastPageNext = () => {
-    // Trigger transition to heart phase
     onComplete();
   };
 
-  const variants = {
+  const slideVariants = {
     enter: (direction: number) => ({
-      rotateY: direction > 0 ? 180 : -180,
+      x: direction > 0 ? 300 : -300,
       opacity: 0,
     }),
     center: {
-      rotateY: 0,
+      x: 0,
       opacity: 1,
     },
     exit: (direction: number) => ({
-      rotateY: direction > 0 ? -180 : 180,
+      x: direction > 0 ? -300 : 300,
       opacity: 0,
     }),
   };
 
   return (
-    <div
-      className="w-full max-w-4xl aspect-[16/10]"
-      style={{
-        maxWidth: "85vw",
-        maxHeight: "80vh",
-      }}
-    >
-      <div className="relative w-full h-full perspective-[2000px]">
+    <div className="fixed inset-0 w-full h-[100dvh] flex flex-col items-center justify-center">
+      {/* Top Header Pill */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="fixed top-8 z-50 bg-white/90 backdrop-blur-sm px-8 py-4 rounded-full shadow-lg"
+        style={{
+          boxShadow: "0 0 30px rgba(255, 51, 119, 0.3)",
+        }}
+      >
+        <h1 className="font-[family-name:var(--font-dancing)] text-3xl md:text-4xl text-gray-800">
+          Happy Birthday Maija! ✨
+        </h1>
+      </motion.div>
+
+      {/* Photo Card Container */}
+      <div className="relative flex items-center justify-center w-full h-full">
         <AnimatePresence initial={false} custom={direction} mode="wait">
           <motion.div
             key={currentPage}
             custom={direction}
-            variants={variants}
+            variants={slideVariants}
             initial="enter"
             animate="center"
             exit="exit"
             transition={{
-              rotateY: { type: "spring", stiffness: 100, damping: 20 },
-              opacity: { duration: 0.3 },
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 },
             }}
-            className="absolute inset-0 bg-white rounded-lg shadow-2xl grid grid-cols-1 md:grid-cols-2 overflow-hidden"
+            className="absolute"
             style={{
-              transformStyle: "preserve-3d",
               willChange: "transform, opacity",
               transform: "translateZ(0)",
               WebkitTransform: "translate3d(0, 0, 0)",
-              backfaceVisibility: "hidden",
-              touchAction: "manipulation",
-              WebkitOverflowScrolling: "touch",
             }}
-            layout={false}
           >
-            {/* Left Page */}
-            <div className="p-8 md:p-12 flex items-center justify-center bg-gradient-to-br from-white to-gray-50">
-              <p
-                className="font-[family-name:var(--font-dancing)] text-2xl md:text-3xl text-gray-800 whitespace-pre-line leading-relaxed"
+            <div
+              className="bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-white"
+              style={{
+                width: "min(300px, 85vw)",
+                height: "min(400px, 70vh)",
+                boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+              }}
+            >
+              <img
+                src={photos[currentPage].imageUrl}
+                alt={`Memory ${currentPage + 1}`}
+                className="w-full h-full"
+                loading="eager"
                 style={{
-                  textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
+                  objectFit: "cover",
+                  display: "block",
+                  transform: "translateZ(0)",
+                  WebkitTransform: "translate3d(0, 0, 0)",
                 }}
-              >
-                {pages[currentPage].leftContent.text}
-              </p>
-            </div>
-
-            {/* Right Page - Polaroid Style */}
-            <div className="p-8 md:p-12 flex items-center justify-center bg-gradient-to-br from-gray-50 to-white">
-              <motion.div
-                className="bg-white p-4 shadow-xl"
-                style={{
-                  transform: "rotate(2deg) translateZ(0)",
-                  WebkitTransform: "rotate(2deg) translate3d(0, 0, 0)",
-                  backfaceVisibility: "hidden",
-                }}
-                whileTap={{ scale: 1.05, rotate: 0 }}
-              >
-                <img
-                  src={pages[currentPage].rightContent.imageUrl}
-                  alt={`Memory ${currentPage + 1}`}
-                  className="w-full h-64 md:h-80 object-cover"
-                  loading="eager"
-                  style={{
-                    transform: "translateZ(0)",
-                    WebkitTransform: "translate3d(0, 0, 0)",
-                    display: "block",
-                    objectFit: "cover",
-                  }}
-                />
-                <div className="h-12 flex items-center justify-center">
-                  <p className="font-[family-name:var(--font-dancing)] text-gray-600 text-lg">
-                    Memory #{currentPage + 1}
-                  </p>
-                </div>
-              </motion.div>
+              />
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation */}
+        {/* Floating Navigation - Left */}
         {currentPage > 0 && (
           <button
             onClick={() => paginate(-1)}
-            className="absolute left-4 md:left-0 top-1/2 -translate-y-1/2 md:-translate-x-16 bg-[#ff3377] text-white rounded-full shadow-lg hover:scale-110 transition-transform touch-manipulation"
+            className="fixed left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white rounded-full shadow-lg hover:bg-white/30 transition-all touch-manipulation z-50"
             style={{
-              boxShadow: "0 0 20px #ff3377",
-              minWidth: "56px",
-              minHeight: "56px",
-              width: "56px",
-              height: "56px",
-              cursor: "pointer",
-              paddingBottom: "max(16px, env(safe-area-inset-bottom, 20px))",
+              width: "50px",
+              height: "50px",
+              minWidth: "50px",
+              minHeight: "50px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              border: "2px solid rgba(255, 255, 255, 0.3)",
             }}
-            aria-label="Previous page"
+            aria-label="Previous photo"
           >
             <ChevronLeft size={28} />
           </button>
         )}
 
-        {currentPage < pages.length - 1 && (
+        {/* Floating Navigation - Right */}
+        {currentPage < photos.length - 1 && (
           <button
             onClick={() => paginate(1)}
-            className="absolute right-4 md:right-0 top-1/2 -translate-y-1/2 md:translate-x-16 bg-[#ff3377] text-white rounded-full shadow-lg hover:scale-110 transition-transform touch-manipulation animate-pulse"
+            className="fixed right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white rounded-full shadow-lg hover:bg-white/30 transition-all touch-manipulation animate-pulse z-50"
             style={{
-              boxShadow: "0 0 20px #ff3377",
-              minWidth: "56px",
-              minHeight: "56px",
-              width: "56px",
-              height: "56px",
-              cursor: "pointer",
-              paddingBottom: "max(16px, env(safe-area-inset-bottom, 20px))",
+              width: "50px",
+              height: "50px",
+              minWidth: "50px",
+              minHeight: "50px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              border: "2px solid rgba(255, 255, 255, 0.3)",
             }}
-            aria-label="Next page"
+            aria-label="Next photo"
           >
             <ChevronRight size={28} />
           </button>
         )}
 
-        {/* Arrow on last page to go to heart */}
-        {currentPage === pages.length - 1 && (
+        {/* Last Page - Continue to Heart */}
+        {currentPage === photos.length - 1 && (
           <button
             onClick={handleLastPageNext}
-            className="absolute right-4 md:right-0 top-1/2 -translate-y-1/2 md:translate-x-16 bg-[#ff3377] text-white rounded-full shadow-lg hover:scale-110 transition-transform animate-pulse touch-manipulation"
+            className="fixed right-4 top-1/2 -translate-y-1/2 bg-[#ff3377] text-white rounded-full shadow-lg hover:scale-110 transition-all touch-manipulation animate-pulse z-50"
             style={{
-              boxShadow: "0 0 20px #ff3377",
-              minWidth: "56px",
-              minHeight: "56px",
-              width: "56px",
-              height: "56px",
-              cursor: "pointer",
-              paddingBottom: "max(16px, env(safe-area-inset-bottom, 20px))",
+              width: "50px",
+              height: "50px",
+              minWidth: "50px",
+              minHeight: "50px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              boxShadow: "0 0 20px rgba(255, 51, 119, 0.6)",
             }}
             aria-label="Continue to heart"
           >
             <ChevronRight size={28} />
           </button>
         )}
+      </div>
 
-        {/* Page Counter */}
-        <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 text-[#ff3377] font-[family-name:var(--font-vt323)] text-xl">
-          {currentPage + 1} / {pages.length}
-        </div>
+      {/* Page Counter */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 text-white/80 font-[family-name:var(--font-vt323)] text-xl z-50">
+        {currentPage + 1} / {photos.length}
       </div>
     </div>
   );

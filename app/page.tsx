@@ -89,18 +89,10 @@ export default function Home() {
         {phase === "book" && (
           <motion.div
             key="book"
-            initial={{ opacity: 0, scale: 0.3, rotateX: -20, y: 100 }}
-            animate={{ opacity: 1, scale: 1, rotateX: 0, y: 0 }}
-            exit={{ opacity: 0, scale: 0, rotateZ: 10, filter: "blur(10px)" }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-            className="fixed inset-0 flex items-center justify-center p-4"
-            style={{
-              willChange: "transform, opacity",
-              zIndex: 50,
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             layout={false}
           >
             <BirthdayBook onComplete={handleBookComplete} />
