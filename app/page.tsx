@@ -42,7 +42,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative w-full h-screen overflow-hidden bg-black">
+    <main className="relative w-full h-[100dvh] overflow-hidden bg-black">
       {/* Grain Overlay */}
       <div className="grain-overlay" />
 

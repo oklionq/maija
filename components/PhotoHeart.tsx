@@ -11,6 +11,23 @@ interface PhotoHeartProps {
 
 export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
   const [isReady, setIsReady] = useState(false);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const updateScale = () => {
+      if (window.innerWidth < 768) {
+        // Mobile: scale down to fit screen width
+        setScale(Math.min(window.innerWidth / 700, 1));
+      } else {
+        setScale(1);
+      }
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
+
   const [photos] = useState(() => {
     const photoCount = 36; // Reduced from 40 to prevent clumping
     const photos: { id: number; x: number; y: number; url: string }[] = [];
@@ -108,7 +125,7 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
   };
 
   return (
-    <div className="fixed inset-0 w-screen h-screen z-40 overflow-hidden">
+    <div className="fixed inset-0 w-screen h-[100dvh] z-40 overflow-hidden">
       {/* Large Blurred Pink Radial Gradient (Foggy Neon Atmosphere) */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -136,7 +153,7 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
           position: "absolute",
           top: "50%",
           left: "50%",
-          transform: "translate(-50%, -50%)",
+          transform: `translate(-50%, -50%) scale(${scale})`,
           willChange: "transform",
         }}
       >
@@ -158,6 +175,7 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
               <motion.div
                 className="w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 border-white"
                 whileHover={{ scale: 1.5, zIndex: 50 }}
+                whileTap={{ scale: 1.5, zIndex: 50 }}
                 style={{
                   transform: `rotate(${(Math.random() * 6 - 3)}deg) translateZ(0)`,
                   willChange: "transform",
@@ -169,6 +187,11 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
                   src={photo.url}
                   alt={`Memory ${photo.id}`}
                   className="w-full h-full object-cover"
+                  loading="eager"
+                  style={{
+                    transform: "translateZ(0)",
+                    aspectRatio: "1 / 1",
+                  }}
                 />
               </motion.div>
             </motion.div>

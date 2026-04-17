@@ -142,12 +142,16 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
                   transform: "rotate(2deg) translateZ(0)",
                   backfaceVisibility: "hidden",
                 }}
-                whileHover={{ scale: 1.05, rotate: 0 }}
+                whileTap={{ scale: 1.05, rotate: 0 }}
               >
                 <img
                   src={pages[currentPage].rightContent.imageUrl}
                   alt={`Memory ${currentPage + 1}`}
                   className="w-full h-64 md:h-80 object-cover"
+                  loading="eager"
+                  style={{
+                    transform: "translateZ(0)",
+                  }}
                 />
                 <div className="h-12 flex items-center justify-center">
                   <p className="font-[family-name:var(--font-dancing)] text-gray-600 text-lg">
@@ -163,10 +167,15 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
         {currentPage > 0 && (
           <button
             onClick={() => paginate(-1)}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 bg-[#ff3377] text-white p-3 rounded-full shadow-lg hover:scale-110 transition-transform"
+            className="absolute left-4 md:left-0 top-1/2 -translate-y-1/2 md:-translate-x-16 bg-[#ff3377] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform touch-manipulation"
             style={{
               boxShadow: "0 0 20px #ff3377",
+              minWidth: "48px",
+              minHeight: "48px",
+              cursor: "pointer",
+              paddingBottom: "max(16px, env(safe-area-inset-bottom, 20px))",
             }}
+            aria-label="Previous page"
           >
             <ChevronLeft size={24} />
           </button>
@@ -175,10 +184,15 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
         {currentPage < pages.length - 1 && (
           <button
             onClick={() => paginate(1)}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 bg-[#ff3377] text-white p-3 rounded-full shadow-lg hover:scale-110 transition-transform"
+            className="absolute right-4 md:right-0 top-1/2 -translate-y-1/2 md:translate-x-16 bg-[#ff3377] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform touch-manipulation"
             style={{
               boxShadow: "0 0 20px #ff3377",
+              minWidth: "48px",
+              minHeight: "48px",
+              cursor: "pointer",
+              paddingBottom: "max(16px, env(safe-area-inset-bottom, 20px))",
             }}
+            aria-label="Next page"
           >
             <ChevronRight size={24} />
           </button>
@@ -188,10 +202,15 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
         {currentPage === pages.length - 1 && (
           <button
             onClick={handleLastPageNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 bg-[#ff3377] text-white p-3 rounded-full shadow-lg hover:scale-110 transition-transform animate-pulse"
+            className="absolute right-4 md:right-0 top-1/2 -translate-y-1/2 md:translate-x-16 bg-[#ff3377] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform animate-pulse touch-manipulation"
             style={{
               boxShadow: "0 0 20px #ff3377",
+              minWidth: "48px",
+              minHeight: "48px",
+              cursor: "pointer",
+              paddingBottom: "max(16px, env(safe-area-inset-bottom, 20px))",
             }}
+            aria-label="Continue to heart"
           >
             <ChevronRight size={24} />
           </button>

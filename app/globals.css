@@ -13,6 +13,9 @@ body {
   background: #000000;
   color: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
+  overflow: hidden;
+  height: 100dvh;
+  width: 100vw;
 }
 
 /* GPU Acceleration for all animated elements */
@@ -22,6 +25,23 @@ canvas,
   transform: translateZ(0);
   backface-visibility: hidden;
   will-change: transform, opacity;
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) {
+  *:hover {
+    transform: none !important;
+    scale: none !important;
+  }
+}
+
+/* Ensure all interactive elements have pointer cursor */
+button,
+a,
+[role="button"],
+[onclick] {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 @keyframes grain {
