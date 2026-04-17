@@ -135,6 +135,7 @@ export default function Starfield({ opacity = 1 }: StarfieldProps) {
         }
       });
 
+      // No FPS cap - scales to monitor refresh rate (120Hz/144Hz)
       animationFrameRef.current = requestAnimationFrame(draw);
     };
 

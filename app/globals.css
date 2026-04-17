@@ -15,6 +15,15 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* GPU Acceleration for all animated elements */
+canvas,
+[class*="motion"],
+[class*="animate"] {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
 @keyframes grain {
   0%, 100% { transform: translate(0, 0); }
   10% { transform: translate(-5%, -10%); }

@@ -43,6 +43,7 @@ export default function NeonReveal({ onComplete }: NeonRevealProps) {
               display: "inline-block",
               transform: "translateZ(0)",
               backfaceVisibility: "hidden",
+              willChange: "transform, opacity",
             }}
           >
             {letter === " " ? "\u00A0" : letter}

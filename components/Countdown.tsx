@@ -11,41 +11,56 @@ export default function Countdown({ onComplete }: CountdownProps) {
   const [shouldComplete, setShouldComplete] = useState(false);
 
   useEffect(() => {
-    // After "1" disappears (at 4.5s), wait 0.8s before completing
+    // Total: 1.5s * 3 numbers + 1.0s void = 5.5s
     const timer = setTimeout(() => {
       setShouldComplete(true);
       onComplete();
-    }, 5300); // 1.5s * 3 + 0.8s = 5.3s
+    }, 5500);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
+
+  // Number animation variants with cinematic timing
+  const numberVariants = {
+    hidden: {
+      scale: 0.5,
+      opacity: 0
+    },
+    visible: {
+      scale: [0.5, 1.1, 1.1, 1.5],
+      opacity: [0, 1, 1, 0],
+      textShadow: [
+        "0 0 20px #ff3377, 0 0 40px #ff3377",
+        "0 0 30px #ff3377, 0 0 60px #ff3377",
+        "0 0 25px #ff3377, 0 0 50px #ff3377",
+        "0 0 40px #ff3377, 0 0 80px #ff3377"
+      ],
+      filter: [
+        "brightness(1)",
+        "brightness(1.2)",
+        "brightness(1.1)",
+        "brightness(1.5)"
+      ]
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-20">
       {/* Number 3 */}
       <motion.div
-        className="font-[family-name:var(--font-vt323)] text-[20vw] text-[#ff3377]"
-        style={{
-          textShadow: "0 0 20px #ff3377, 0 0 40px #ff3377, 0 0 60px #ff3377",
-          transform: "translateZ(0)",
-          backfaceVisibility: "hidden",
-        }}
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{
-          scale: [0.8, 1.2, 1],
-          opacity: [0, 1, 0],
-          filter: [
-            "brightness(1) blur(0px)",
-            "brightness(1.5) blur(2px)",
-            "brightness(1) blur(0px)",
-            "brightness(0.8) blur(1px)",
-            "brightness(1) blur(0px)"
-          ]
-        }}
+        className="font-[family-name:var(--font-vt323)] text-[20vw] text-[#ff3377] absolute"
+        variants={numberVariants}
+        initial="hidden"
+        animate="visible"
         transition={{
           duration: 1.5,
-          times: [0, 0.3, 0.6, 0.8, 1],
-          ease: "easeInOut"
+          times: [0, 0.2, 0.8, 1],
+          ease: [0.34, 1.56, 0.64, 1] // Custom easing for spring-like feel
+        }}
+        style={{
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden",
+          willChange: "transform, opacity, filter",
         }}
       >
         3
@@ -54,28 +69,19 @@ export default function Countdown({ onComplete }: CountdownProps) {
       {/* Number 2 */}
       <motion.div
         className="font-[family-name:var(--font-vt323)] text-[20vw] text-[#ff3377] absolute"
-        style={{
-          textShadow: "0 0 20px #ff3377, 0 0 40px #ff3377, 0 0 60px #ff3377",
-          transform: "translateZ(0)",
-          backfaceVisibility: "hidden",
-        }}
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{
-          scale: [0.8, 1.2, 1],
-          opacity: [0, 1, 0],
-          filter: [
-            "brightness(1) blur(0px)",
-            "brightness(1.5) blur(2px)",
-            "brightness(1) blur(0px)",
-            "brightness(0.8) blur(1px)",
-            "brightness(1) blur(0px)"
-          ]
-        }}
+        variants={numberVariants}
+        initial="hidden"
+        animate="visible"
         transition={{
           duration: 1.5,
           delay: 1.5,
-          times: [0, 0.3, 0.6, 0.8, 1],
-          ease: "easeInOut"
+          times: [0, 0.2, 0.8, 1],
+          ease: [0.34, 1.56, 0.64, 1]
+        }}
+        style={{
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden",
+          willChange: "transform, opacity, filter",
         }}
       >
         2
@@ -84,28 +90,19 @@ export default function Countdown({ onComplete }: CountdownProps) {
       {/* Number 1 */}
       <motion.div
         className="font-[family-name:var(--font-vt323)] text-[20vw] text-[#ff3377] absolute"
-        style={{
-          textShadow: "0 0 20px #ff3377, 0 0 40px #ff3377, 0 0 60px #ff3377",
-          transform: "translateZ(0)",
-          backfaceVisibility: "hidden",
-        }}
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{
-          scale: [0.8, 1.2, 1],
-          opacity: [0, 1, 0],
-          filter: [
-            "brightness(1) blur(0px)",
-            "brightness(1.5) blur(2px)",
-            "brightness(1) blur(0px)",
-            "brightness(0.8) blur(1px)",
-            "brightness(1) blur(0px)"
-          ]
-        }}
+        variants={numberVariants}
+        initial="hidden"
+        animate="visible"
         transition={{
           duration: 1.5,
           delay: 3.0,
-          times: [0, 0.3, 0.6, 0.8, 1],
-          ease: "easeInOut"
+          times: [0, 0.2, 0.8, 1],
+          ease: [0.34, 1.56, 0.64, 1]
+        }}
+        style={{
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden",
+          willChange: "transform, opacity, filter",
         }}
       >
         1

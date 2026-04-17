@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import confetti from "canvas-confetti";
@@ -12,19 +12,24 @@ interface PhotoHeartProps {
 export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
   const [isReady, setIsReady] = useState(false);
   const [photos] = useState(() => {
-    const photoCount = 40;
+    const photoCount = 36; // Reduced from 40 to prevent clumping
     const photos: { id: number; x: number; y: number; url: string }[] = [];
+    const realPhotos = [
+      "/1.png", "/2.jfif", "/3.png", "/4.png", "/5.png",
+      "/6.jpg", "/7.jfif", "/8.jpg", "/9.jpg", "/10.png"
+    ];
 
     for (let i = 0; i < photoCount; i++) {
-      const t = (i / photoCount) * Math.PI * 2;
+      // Offset by 0.5 to avoid exact bottom tip clustering
+      const t = ((i + 0.5) / photoCount) * Math.PI * 2;
       const x = 16 * Math.pow(Math.sin(t), 3);
       const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
 
       photos.push({
         id: i,
-        x: x * 15 * 1.5,
-        y: y * 15 * 1.5,
-        url: `https://picsum.photos/seed/${i + 100}/100/100`,
+        x: x * 18,
+        y: y * 18,
+        url: realPhotos[i % realPhotos.length],
       });
     }
 
@@ -103,99 +108,108 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
   };
 
   return (
-    <motion.div
-      className="fixed inset-0 flex items-center justify-center z-40 overflow-hidden"
-      initial="hidden"
-      animate={isReady ? "visible" : "hidden"}
-      variants={containerVariants}
-      style={{
-        transform: "translateZ(0)",
-        backfaceVisibility: "hidden",
-      }}
-    >
-      <div className="relative w-full h-full flex items-center justify-center">
-        {/* Large Blurred Pink Radial Gradient (Foggy Neon Atmosphere) */}
-        <div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          style={{
-            background: "radial-gradient(circle, rgba(255, 51, 119, 0.25) 0%, rgba(255, 51, 119, 0.1) 40%, transparent 70%)",
-            filter: "blur(100px)",
-            zIndex: -1,
-          }}
-        />
+    <div className="fixed inset-0 w-screen h-screen z-40 overflow-hidden">
+      {/* Large Blurred Pink Radial Gradient (Foggy Neon Atmosphere) */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(255, 51, 119, 0.25) 0%, rgba(255, 51, 119, 0.1) 40%, transparent 70%)",
+          filter: "blur(100px)",
+          zIndex: -1,
+        }}
+      />
 
-        {/* Pink Glow Halo Background */}
-        <div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          style={{
-            background: "radial-gradient(circle, rgba(255, 51, 119, 0.15) 0%, transparent 70%)",
-          }}
-        />
-        {photos.map((photo) => (
+      {/* Pink Glow Halo Background */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(255, 51, 119, 0.15) 0%, transparent 70%)",
+        }}
+      />
+
+      {/* Heart Container - Absolute Dead Center */}
+      <motion.div
+        initial="hidden"
+        animate={isReady ? "visible" : "hidden"}
+        variants={containerVariants}
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          willChange: "transform",
+        }}
+      >
+        <div className="relative">
+          {photos.map((photo) => (
+            <motion.div
+              key={photo.id}
+              custom={{ x: photo.x, y: photo.y }}
+              variants={photoVariants}
+              className="absolute"
+              style={{
+                left: 0,
+                top: 0,
+                willChange: "transform, opacity",
+                transform: "translateZ(0)",
+                backfaceVisibility: "hidden",
+              }}
+            >
+              <motion.div
+                className="w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 border-white"
+                whileHover={{ scale: 1.5, zIndex: 50 }}
+                style={{
+                  transform: `rotate(${(Math.random() * 6 - 3)}deg) translateZ(0)`,
+                  willChange: "transform",
+                  backfaceVisibility: "hidden",
+                  filter: "drop-shadow(0 0 8px rgba(255, 51, 119, 0.8)) saturate(1.5) brightness(1.1)",
+                }}
+              >
+                <img
+                  src={photo.url}
+                  alt={`Memory ${photo.id}`}
+                  className="w-full h-full object-cover"
+                />
+              </motion.div>
+            </motion.div>
+          ))}
+
+          {/* Center Pulsing Heart */}
           <motion.div
-            key={photo.id}
-            custom={{ x: photo.x, y: photo.y }}
-            variants={photoVariants}
-            className="absolute"
+            initial={{ scale: 0 }}
+            animate={{ scale: isReady ? [0, 1.2, 1] : 0 }}
+            transition={{ duration: 1, delay: 2 }}
             style={{
-              willChange: "transform, opacity",
-              transform: "translateZ(0)",
-              backfaceVisibility: "hidden",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              willChange: "transform",
             }}
           >
             <motion.div
-              className="w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 border-white"
-              whileHover={{ scale: 1.5, zIndex: 50 }}
-              style={{
-                transform: `rotate(${Math.random() * 20 - 10}deg) translateZ(0)`,
-                willChange: "transform, filter",
-                backfaceVisibility: "hidden",
-                boxShadow: "0 0 5px #ff3377, 0 0 15px rgba(255, 51, 119, 0.5), 0 0 40px rgba(255, 51, 119, 0.2)",
-                filter: "saturate(1.5) brightness(1.1)",
+              animate={{
+                scale: [1, 1.1, 1],
+                opacity: [0.8, 1, 0.8],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
               }}
             >
-              <img
-                src={photo.url}
-                alt={`Memory ${photo.id}`}
-                className="w-full h-full object-cover"
+              <Heart
+                size={80}
+                fill="#ff3377"
+                color="#ff3377"
+                style={{
+                  filter: "drop-shadow(0 0 20px rgba(255, 51, 119, 0.9))",
+                }}
               />
             </motion.div>
           </motion.div>
-        ))}
-
-        {/* Center Pulsing Heart */}
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: isReady ? [0, 1.2, 1] : 0 }}
-          transition={{ duration: 1, delay: 2 }}
-          className="absolute z-50"
-          style={{
-            transform: "translateZ(0)",
-            backfaceVisibility: "hidden",
-          }}
-        >
-          <motion.div
-            animate={{
-              scale: [1, 1.1, 1],
-              opacity: [0.8, 1, 0.8],
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            <Heart
-              size={80}
-              fill="#ff3377"
-              color="#ff3377"
-              style={{
-                filter: "drop-shadow(0 0 5px #ff3377) drop-shadow(0 0 15px rgba(255, 51, 119, 0.5)) drop-shadow(0 0 40px rgba(255, 51, 119, 0.2))",
-              }}
-            />
-          </motion.div>
-        </motion.div>
-      </div>
-    </motion.div>
+        </div>
+      </motion.div>
+    </div>
   );
 }

@@ -56,7 +56,7 @@ export default function MatrixBackground({ opacity = 1 }: MatrixBackgroundProps)
         dropsRef.current[i]++;
       }
 
-      // Continue animation loop
+      // Continue animation loop - no FPS cap, scales to monitor refresh rate
       animationFrameRef.current = requestAnimationFrame(draw);
     };
 

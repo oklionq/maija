@@ -63,6 +63,7 @@ export default function Home() {
             key="countdown"
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
+            layout={false}
           >
             <Countdown onComplete={() => setPhase("reveal")} />
           </motion.div>
@@ -75,6 +76,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
+            layout={false}
           >
             <NeonReveal onComplete={() => setPhase("book")} />
           </motion.div>
@@ -89,6 +91,7 @@ export default function Home() {
             transition={{ duration: 1.5, ease: "easeOut" }}
             className="fixed inset-0 flex items-center justify-center p-4"
             style={{ willChange: "transform, opacity", zIndex: 50 }}
+            layout={false}
           >
             <BirthdayBook onComplete={handleBookComplete} />
           </motion.div>
@@ -100,6 +103,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
+            layout={false}
           >
             <PhotoHeart />
           </motion.div>

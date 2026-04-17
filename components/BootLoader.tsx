@@ -21,6 +21,31 @@ export default function BootLoader({ onComplete }: BootLoaderProps) {
   const [showCursor, setShowCursor] = useState(true);
 
   useEffect(() => {
+    // Pre-load all photos for PhotoHeart during boot
+    const photoCount = 40;
+    const imagePromises: Promise<void>[] = [];
+
+    for (let i = 0; i < photoCount; i++) {
+      const img = new Image();
+      const promise = new Promise<void>((resolve) => {
+        img.onload = () => resolve();
+        img.onerror = () => resolve(); // Continue even if image fails
+      });
+      img.src = `https://picsum.photos/seed/${i + 100}/100/100`;
+      imagePromises.push(promise);
+    }
+
+    // Pre-load BirthdayBook images
+    for (let i = 1; i <= 6; i++) {
+      const img = new Image();
+      const promise = new Promise<void>((resolve) => {
+        img.onload = () => resolve();
+        img.onerror = () => resolve();
+      });
+      img.src = `https://picsum.photos/seed/${i}/400/600`;
+      imagePromises.push(promise);
+    }
+
     // Flickering cursor animation
     const cursorInterval = setInterval(() => {
       setShowCursor((prev) => !prev);

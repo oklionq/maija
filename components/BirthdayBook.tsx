@@ -21,7 +21,7 @@ const pages: BookPage[] = [
       text: "Dear Maija,\n\nOn this special day, we celebrate the amazing person you are. Your smile lights up every room you enter.",
     },
     rightContent: {
-      imageUrl: "https://picsum.photos/seed/1/400/600",
+      imageUrl: "/2.jfif",
     },
   },
   {
@@ -30,7 +30,7 @@ const pages: BookPage[] = [
       text: "Your kindness and warmth touch everyone around you. You make the world a better place just by being in it.",
     },
     rightContent: {
-      imageUrl: "https://picsum.photos/seed/2/400/600",
+      imageUrl: "/6.jpg",
     },
   },
   {
@@ -39,7 +39,7 @@ const pages: BookPage[] = [
       text: "Every moment with you is a treasure. Your laughter is contagious and your spirit is inspiring.",
     },
     rightContent: {
-      imageUrl: "https://picsum.photos/seed/3/400/600",
+      imageUrl: "/3.png",
     },
   },
   {
@@ -48,25 +48,16 @@ const pages: BookPage[] = [
       text: "May this year bring you endless joy, unforgettable adventures, and all the happiness you deserve.",
     },
     rightContent: {
-      imageUrl: "https://picsum.photos/seed/4/400/600",
+      imageUrl: "/9.jpg",
     },
   },
   {
     id: 5,
     leftContent: {
-      text: "Here's to another year of wonderful memories, dreams coming true, and love that never ends.",
-    },
-    rightContent: {
-      imageUrl: "https://picsum.photos/seed/5/400/600",
-    },
-  },
-  {
-    id: 6,
-    leftContent: {
       text: "Happy Birthday, Maija!\n\nWith all our love,\nYour friends and family ❤️",
     },
     rightContent: {
-      imageUrl: "https://picsum.photos/seed/6/400/600",
+      imageUrl: "/5.png",
     },
   },
 ];
@@ -129,6 +120,7 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
               transform: "translateZ(0)",
               backfaceVisibility: "hidden",
             }}
+            layout={false}
           >
             {/* Left Page */}
             <div className="p-8 md:p-12 flex items-center justify-center bg-gradient-to-br from-white to-gray-50">
