@@ -5,8 +5,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCreative, Mousewheel, Keyboard } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-creative";
-import { Hand } from "lucide-react";
+import { ChevronLeft, ChevronRight, Hand } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import type { Swiper as SwiperType } from "swiper";
 
 interface Memory {
   id: number;
@@ -31,19 +32,15 @@ interface BirthdayBookProps {
 }
 
 export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
-  const [showHint, setShowHint] = useState(true);
+  const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
 
   useEffect(() => {
     // Prevent scrolling/bouncing on iOS Safari
     document.body.style.overflow = "hidden";
-    
-    // Hide hint after 3 seconds automatically
-    const timer = setTimeout(() => setShowHint(false), 3000);
-    
     return () => {
       document.body.style.overflow = "";
-      clearTimeout(timer);
     };
   }, []);
 
@@ -74,32 +71,38 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
         </h1>
       </div>
 
-      {/* Swipe Hint Animation */}
-      <AnimatePresence>
-        {showHint && !isEnd && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, transition: { duration: 0.3 } }}
-            className="absolute z-50 pointer-events-none flex flex-col items-center justify-center text-white/90 drop-shadow-xl"
-            style={{ bottom: "12%" }}
-          >
-            <motion.div
-              animate={{ x: [-15, 25, -15] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-            >
-              <Hand size={48} className="drop-shadow-lg" />
-            </motion.div>
-            <span className="mt-3 text-sm font-bold tracking-widest uppercase text-white/90 shadow-black drop-shadow-lg">
-              Swipe
-            </span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Navigation Arrows */}
+      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 sm:px-12 z-50 pointer-events-none">
+        <button
+          onClick={() => {
+            if (swiperInstance) {
+              swiperInstance.slidePrev();
+            }
+          }}
+          disabled={currentIndex === 0}
+          className={`w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-md bg-white/20 border border-white/30 text-white shadow-lg pointer-events-auto transition-all duration-300 ${currentIndex === 0 ? "opacity-0 scale-75" : "opacity-100 scale-100 hover:bg-white/40 hover:scale-110 active:scale-90"}`}
+          style={{ touchAction: "manipulation" }}
+        >
+          <ChevronLeft size={36} />
+        </button>
+        <button
+          onClick={() => {
+            if (swiperInstance) {
+              swiperInstance.slideNext();
+            }
+          }}
+          disabled={isEnd}
+          className={`w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-md bg-white/20 border border-white/30 text-white shadow-lg pointer-events-auto transition-all duration-300 ${isEnd ? "opacity-0 scale-75" : "opacity-100 scale-100 hover:bg-white/40 hover:scale-110 active:scale-90"}`}
+          style={{ touchAction: "manipulation" }}
+        >
+          <ChevronRight size={36} />
+        </button>
+      </div>
 
       {/* Swiper Container */}
       <div className="w-full flex justify-center items-center h-full z-40">
         <Swiper
+          onSwiper={setSwiperInstance}
           effect={"creative"}
           creativeEffect={{
             prev: {
@@ -111,13 +114,14 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
               translate: ["100%", 0, 0],
             },
           }}
+          allowTouchMove={false} // Disable swipe as requested
           mousewheel={true}
           keyboard={true}
-          grabCursor={true}
+          grabCursor={false}
           modules={[EffectCreative, Mousewheel, Keyboard]}
           onSlideChange={(swiper) => {
             try {
-              if (showHint) setShowHint(false);
+              setCurrentIndex(swiper.activeIndex);
               setIsEnd(swiper.isEnd);
             } catch (err) {
               console.error(err);
@@ -127,7 +131,7 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
           style={{
             WebkitTransform: "translate3d(0,0,0)",
             transform: "translate3d(0,0,0)",
-            overflow: "visible", // required so cards don't get clipped by edge
+            overflow: "visible", 
           }}
         >
           {memories.map((memory, idx) => (
