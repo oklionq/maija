@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { EffectCards } from "swiper/modules";
+import { EffectCreative, Mousewheel, Keyboard } from "swiper/modules";
 import "swiper/css";
-import "swiper/css/effect-cards";
+import "swiper/css/effect-creative";
 import { Hand } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -35,7 +35,7 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
   const [isEnd, setIsEnd] = useState(false);
 
   useEffect(() => {
-    // Prevent scrolling/bouncing on iOS
+    // Prevent scrolling/bouncing on iOS Safari
     document.body.style.overflow = "hidden";
     
     // Hide hint after 3 seconds automatically
@@ -47,6 +47,16 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
     };
   }, []);
 
+  const handleCompleteClick = (e: React.MouseEvent) => {
+    try {
+      e.preventDefault();
+      e.stopPropagation();
+      onComplete();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   if (!memories || memories.length === 0) return null;
 
   return (
@@ -57,7 +67,7 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
       {/* Top Header Pill */}
       <div 
         className="absolute z-[100] bg-white rounded-full px-8 py-3 shadow-xl flex items-center justify-center"
-        style={{ top: "2.5rem" }}
+        style={{ top: "2rem" }}
       >
         <h1 className="font-[family-name:var(--font-dancing)] text-2xl md:text-3xl text-gray-900 m-0 leading-none">
           Happy Birthday Maija! ✨
@@ -81,7 +91,7 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
               <Hand size={48} className="drop-shadow-lg" />
             </motion.div>
             <span className="mt-3 text-sm font-bold tracking-widest uppercase text-white/90 shadow-black drop-shadow-lg">
-              Swipe to see more
+              Swipe
             </span>
           </motion.div>
         )}
@@ -90,12 +100,28 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
       {/* Swiper Container */}
       <div className="w-full flex justify-center items-center h-full z-40">
         <Swiper
-          effect={"cards"}
+          effect={"creative"}
+          creativeEffect={{
+            prev: {
+              shadow: true,
+              translate: [0, 0, -400],
+              rotate: [0, 0, -10],
+            },
+            next: {
+              translate: ["100%", 0, 0],
+            },
+          }}
+          mousewheel={true}
+          keyboard={true}
           grabCursor={true}
-          modules={[EffectCards]}
+          modules={[EffectCreative, Mousewheel, Keyboard]}
           onSlideChange={(swiper) => {
-            if (showHint) setShowHint(false);
-            setIsEnd(swiper.isEnd);
+            try {
+              if (showHint) setShowHint(false);
+              setIsEnd(swiper.isEnd);
+            } catch (err) {
+              console.error(err);
+            }
           }}
           className="w-[min(85vw,42vh)] h-[min(113vw,56vh)] max-h-[65vh] drop-shadow-2xl"
           style={{
@@ -107,13 +133,14 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
           {memories.map((memory, idx) => (
             <SwiperSlide
               key={memory.id}
-              className="bg-white p-[12px] rounded-2xl flex justify-center items-center shadow-black/40"
+              className="bg-white p-[10px] rounded-2xl flex justify-center items-center shadow-black/40"
               style={{
                 WebkitTransform: "translate3d(0,0,0)",
                 transform: "translate3d(0,0,0)",
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
                 boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
+                willChange: "transform",
               }}
             >
               <div
@@ -123,6 +150,7 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
                   transform: "translate3d(0,0,0)",
                   backfaceVisibility: "hidden",
                   WebkitBackfaceVisibility: "hidden",
+                  willChange: "transform",
                 }}
               >
                 <img
@@ -152,7 +180,7 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
             className="absolute bottom-12 sm:bottom-20 z-[110]"
           >
             <button
-              onClick={onComplete}
+              onClick={handleCompleteClick}
               aria-label="Open My Heart"
               className="px-8 py-4 rounded-full flex items-center justify-center backdrop-blur-md bg-[#ff3377] text-white shadow-[0_0_40px_rgba(255,51,119,0.9)] animate-pulse font-bold text-xl whitespace-nowrap"
               style={{
