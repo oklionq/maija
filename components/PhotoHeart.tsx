@@ -16,8 +16,10 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
   useEffect(() => {
     const updateScale = () => {
       if (window.innerWidth < 768) {
-        // Mobile: scale down to fit screen width
-        setScale(Math.min(window.innerWidth / 700, 1));
+        // Mobile landscape: scale based on height to prevent clipping
+        const heightScale = window.innerHeight / 600;
+        const widthScale = window.innerWidth / 700;
+        setScale(Math.min(heightScale, widthScale, 1));
       } else {
         setScale(1);
       }
@@ -181,6 +183,8 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
                   willChange: "transform",
                   backfaceVisibility: "hidden",
                   filter: "drop-shadow(0 0 8px rgba(255, 51, 119, 0.8)) saturate(1.5) brightness(1.1)",
+                  touchAction: "manipulation",
+                  WebkitOverflowScrolling: "touch",
                 }}
               >
                 <img
@@ -191,6 +195,8 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
                   style={{
                     transform: "translateZ(0)",
                     aspectRatio: "1 / 1",
+                    display: "block",
+                    objectFit: "cover",
                   }}
                 />
               </motion.div>

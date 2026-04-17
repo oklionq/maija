@@ -16,6 +16,8 @@ body {
   overflow: hidden;
   height: 100dvh;
   width: 100vw;
+  -webkit-overflow-scrolling: touch;
+  touch-action: manipulation;
 }
 
 /* GPU Acceleration for all animated elements */
@@ -42,6 +44,8 @@ a,
 [onclick] {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-overflow-scrolling: touch;
 }
 
 @keyframes grain {

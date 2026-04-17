@@ -9,6 +9,7 @@ import Countdown from "@/components/Countdown";
 import NeonReveal from "@/components/NeonReveal";
 import BirthdayBook from "@/components/BirthdayBook";
 import PhotoHeart from "@/components/PhotoHeart";
+import OrientationLock from "@/components/OrientationLock";
 
 type Phase = "loading" | "countdown" | "reveal" | "book" | "heart";
 
@@ -43,6 +44,9 @@ export default function Home() {
 
   return (
     <main className="relative w-full h-[100dvh] overflow-hidden bg-black">
+      {/* Orientation Lock Overlay */}
+      <OrientationLock />
+
       {/* Grain Overlay */}
       <div className="grain-overlay" />
 

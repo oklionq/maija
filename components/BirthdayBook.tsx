@@ -99,7 +99,7 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
   };
 
   return (
-    <div className="w-full max-w-4xl aspect-[16/10]">
+    <div className="w-full max-w-4xl aspect-[16/10]" style={{ maxHeight: "85vh" }}>
       <div className="relative w-full h-full perspective-[2000px]">
         <AnimatePresence initial={false} custom={direction} mode="wait">
           <motion.div
@@ -119,6 +119,8 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
               willChange: "transform, opacity",
               transform: "translateZ(0)",
               backfaceVisibility: "hidden",
+              touchAction: "manipulation",
+              WebkitOverflowScrolling: "touch",
             }}
             layout={false}
           >
@@ -151,6 +153,8 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
                   loading="eager"
                   style={{
                     transform: "translateZ(0)",
+                    display: "block",
+                    objectFit: "cover",
                   }}
                 />
                 <div className="h-12 flex items-center justify-center">
