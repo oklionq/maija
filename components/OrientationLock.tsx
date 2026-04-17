@@ -10,7 +10,7 @@ export default function OrientationLock() {
 
   useEffect(() => {
     const checkOrientation = () => {
-      const portrait = window.innerHeight > window.innerWidth;
+      const portrait = window.matchMedia("(orientation: portrait)").matches;
       const mobile = window.innerWidth < 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
       setIsPortrait(portrait);
@@ -21,9 +21,18 @@ export default function OrientationLock() {
     window.addEventListener("resize", checkOrientation);
     window.addEventListener("orientationchange", checkOrientation);
 
+    // Also listen to matchMedia changes
+    const portraitMediaQuery = window.matchMedia("(orientation: portrait)");
+    const handleMediaChange = (e: MediaQueryListEvent) => {
+      setIsPortrait(e.matches);
+    };
+
+    portraitMediaQuery.addEventListener("change", handleMediaChange);
+
     return () => {
       window.removeEventListener("resize", checkOrientation);
       window.removeEventListener("orientationchange", checkOrientation);
+      portraitMediaQuery.removeEventListener("change", handleMediaChange);
     };
   }, []);
 
@@ -74,7 +83,7 @@ export default function OrientationLock() {
               textShadow: "0 0 10px rgba(255, 51, 119, 0.5)",
             }}
           >
-            Пожалуйста, переверни экран для лучшего опыта ✨
+            Пожалуйста, переверни экран ✨
           </motion.p>
 
           {/* Pulsing Glow */}

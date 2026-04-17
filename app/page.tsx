@@ -94,7 +94,13 @@ export default function Home() {
             exit={{ opacity: 0, scale: 0, rotateZ: 10, filter: "blur(10px)" }}
             transition={{ duration: 1.5, ease: "easeOut" }}
             className="fixed inset-0 flex items-center justify-center p-4"
-            style={{ willChange: "transform, opacity", zIndex: 50 }}
+            style={{
+              willChange: "transform, opacity",
+              zIndex: 50,
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
             layout={false}
           >
             <BirthdayBook onComplete={handleBookComplete} />

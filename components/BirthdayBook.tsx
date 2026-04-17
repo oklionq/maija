@@ -99,7 +99,13 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
   };
 
   return (
-    <div className="w-full max-w-4xl aspect-[16/10]" style={{ maxHeight: "85vh" }}>
+    <div
+      className="w-full max-w-4xl aspect-[16/10]"
+      style={{
+        maxWidth: "85vw",
+        maxHeight: "80vh",
+      }}
+    >
       <div className="relative w-full h-full perspective-[2000px]">
         <AnimatePresence initial={false} custom={direction} mode="wait">
           <motion.div
@@ -118,6 +124,7 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
               transformStyle: "preserve-3d",
               willChange: "transform, opacity",
               transform: "translateZ(0)",
+              WebkitTransform: "translate3d(0, 0, 0)",
               backfaceVisibility: "hidden",
               touchAction: "manipulation",
               WebkitOverflowScrolling: "touch",
@@ -142,6 +149,7 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
                 className="bg-white p-4 shadow-xl"
                 style={{
                   transform: "rotate(2deg) translateZ(0)",
+                  WebkitTransform: "rotate(2deg) translate3d(0, 0, 0)",
                   backfaceVisibility: "hidden",
                 }}
                 whileTap={{ scale: 1.05, rotate: 0 }}
@@ -153,6 +161,7 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
                   loading="eager"
                   style={{
                     transform: "translateZ(0)",
+                    WebkitTransform: "translate3d(0, 0, 0)",
                     display: "block",
                     objectFit: "cover",
                   }}
@@ -171,34 +180,44 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
         {currentPage > 0 && (
           <button
             onClick={() => paginate(-1)}
-            className="absolute left-4 md:left-0 top-1/2 -translate-y-1/2 md:-translate-x-16 bg-[#ff3377] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform touch-manipulation"
+            className="absolute left-4 md:left-0 top-1/2 -translate-y-1/2 md:-translate-x-16 bg-[#ff3377] text-white rounded-full shadow-lg hover:scale-110 transition-transform touch-manipulation"
             style={{
               boxShadow: "0 0 20px #ff3377",
-              minWidth: "48px",
-              minHeight: "48px",
+              minWidth: "56px",
+              minHeight: "56px",
+              width: "56px",
+              height: "56px",
               cursor: "pointer",
               paddingBottom: "max(16px, env(safe-area-inset-bottom, 20px))",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
             aria-label="Previous page"
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft size={28} />
           </button>
         )}
 
         {currentPage < pages.length - 1 && (
           <button
             onClick={() => paginate(1)}
-            className="absolute right-4 md:right-0 top-1/2 -translate-y-1/2 md:translate-x-16 bg-[#ff3377] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform touch-manipulation"
+            className="absolute right-4 md:right-0 top-1/2 -translate-y-1/2 md:translate-x-16 bg-[#ff3377] text-white rounded-full shadow-lg hover:scale-110 transition-transform touch-manipulation animate-pulse"
             style={{
               boxShadow: "0 0 20px #ff3377",
-              minWidth: "48px",
-              minHeight: "48px",
+              minWidth: "56px",
+              minHeight: "56px",
+              width: "56px",
+              height: "56px",
               cursor: "pointer",
               paddingBottom: "max(16px, env(safe-area-inset-bottom, 20px))",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
             aria-label="Next page"
           >
-            <ChevronRight size={24} />
+            <ChevronRight size={28} />
           </button>
         )}
 
@@ -206,17 +225,22 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
         {currentPage === pages.length - 1 && (
           <button
             onClick={handleLastPageNext}
-            className="absolute right-4 md:right-0 top-1/2 -translate-y-1/2 md:translate-x-16 bg-[#ff3377] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform animate-pulse touch-manipulation"
+            className="absolute right-4 md:right-0 top-1/2 -translate-y-1/2 md:translate-x-16 bg-[#ff3377] text-white rounded-full shadow-lg hover:scale-110 transition-transform animate-pulse touch-manipulation"
             style={{
               boxShadow: "0 0 20px #ff3377",
-              minWidth: "48px",
-              minHeight: "48px",
+              minWidth: "56px",
+              minHeight: "56px",
+              width: "56px",
+              height: "56px",
               cursor: "pointer",
               paddingBottom: "max(16px, env(safe-area-inset-bottom, 20px))",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
             aria-label="Continue to heart"
           >
-            <ChevronRight size={24} />
+            <ChevronRight size={28} />
           </button>
         )}
 

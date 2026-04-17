@@ -16,8 +16,8 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
   useEffect(() => {
     const updateScale = () => {
       if (window.innerWidth < 768) {
-        // Mobile landscape: scale based on height to prevent clipping
-        const heightScale = window.innerHeight / 600;
+        // Mobile landscape: scale based on height with 0.8 multiplier
+        const heightScale = (window.innerHeight / 600) * 0.8;
         const widthScale = window.innerWidth / 700;
         setScale(Math.min(heightScale, widthScale, 1));
       } else {
@@ -180,6 +180,7 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
                 whileTap={{ scale: 1.5, zIndex: 50 }}
                 style={{
                   transform: `rotate(${(Math.random() * 6 - 3)}deg) translateZ(0)`,
+                  WebkitTransform: `rotate(${(Math.random() * 6 - 3)}deg) translate3d(0, 0, 0)`,
                   willChange: "transform",
                   backfaceVisibility: "hidden",
                   filter: "drop-shadow(0 0 8px rgba(255, 51, 119, 0.8)) saturate(1.5) brightness(1.1)",
@@ -194,6 +195,7 @@ export default function PhotoHeart({ onComplete }: PhotoHeartProps) {
                   loading="eager"
                   style={{
                     transform: "translateZ(0)",
+                    WebkitTransform: "translate3d(0, 0, 0)",
                     aspectRatio: "1 / 1",
                     display: "block",
                     objectFit: "cover",
