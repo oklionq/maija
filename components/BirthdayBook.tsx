@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
 
 interface PhotoCard {
   id: number;
@@ -38,13 +38,13 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
     }
   };
 
-  const handleLastPageNext = () => {
+  const handleContinueToHeart = () => {
     onComplete();
   };
 
   const slideVariants = {
     enter: (direction: number) => ({
-      x: direction > 0 ? 300 : -300,
+      x: direction > 0 ? 50 : -50,
       opacity: 0,
     }),
     center: {
@@ -52,26 +52,43 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
       opacity: 1,
     },
     exit: (direction: number) => ({
-      x: direction > 0 ? -300 : 300,
+      x: direction > 0 ? -50 : 50,
       opacity: 0,
     }),
   };
 
   return (
     <div className="fixed inset-0 w-full h-[100dvh] flex flex-col items-center justify-center">
-      {/* Top Header Pill */}
+      {/* Top Header Pill with Glow */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
         transition={{ duration: 0.8 }}
-        className="fixed top-8 z-50 bg-white/90 backdrop-blur-sm px-8 py-4 rounded-full shadow-lg"
+        className="fixed top-8 z-50 bg-white/95 backdrop-blur-sm px-8 py-4 rounded-full shadow-lg"
         style={{
-          boxShadow: "0 0 30px rgba(255, 51, 119, 0.3)",
+          boxShadow: "0 0 30px rgba(255, 51, 119, 0.4), 0 10px 40px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h1 className="font-[family-name:var(--font-dancing)] text-3xl md:text-4xl text-gray-800">
+        <motion.h1
+          className="font-[family-name:var(--font-dancing)] text-3xl md:text-4xl text-gray-900"
+          animate={{
+            textShadow: [
+              "0 0 10px rgba(255, 51, 119, 0.3)",
+              "0 0 20px rgba(255, 51, 119, 0.5)",
+              "0 0 10px rgba(255, 51, 119, 0.3)",
+            ],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
           Happy Birthday Maija! ✨
-        </h1>
+        </motion.h1>
       </motion.div>
 
       {/* Photo Card Container */}
@@ -95,26 +112,35 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
               WebkitTransform: "translate3d(0, 0, 0)",
             }}
           >
+            {/* Polaroid-style Card */}
             <div
-              className="bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-white"
+              className="bg-white p-2 rounded-xl shadow-2xl"
               style={{
-                width: "min(300px, 85vw)",
-                height: "min(400px, 70vh)",
+                width: "min(320px, 85vw)",
                 boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
               }}
             >
-              <img
-                src={photos[currentPage].imageUrl}
-                alt={`Memory ${currentPage + 1}`}
-                className="w-full h-full"
-                loading="eager"
+              <div
                 style={{
-                  objectFit: "cover",
-                  display: "block",
-                  transform: "translateZ(0)",
-                  WebkitTransform: "translate3d(0, 0, 0)",
+                  aspectRatio: "3 / 4",
+                  overflow: "hidden",
+                  borderRadius: "0.5rem",
                 }}
-              />
+              >
+                <img
+                  src={photos[currentPage].imageUrl}
+                  alt={`Memory ${currentPage + 1}`}
+                  className="w-full h-full"
+                  loading="eager"
+                  style={{
+                    objectFit: "cover",
+                    display: "block",
+                    transform: "translateZ(0)",
+                    WebkitTransform: "translate3d(0, 0, 0)",
+                    pointerEvents: "none",
+                  }}
+                />
+              </div>
             </div>
           </motion.div>
         </AnimatePresence>
@@ -125,10 +151,10 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
             onClick={() => paginate(-1)}
             className="fixed left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white rounded-full shadow-lg hover:bg-white/30 transition-all touch-manipulation z-50"
             style={{
-              width: "50px",
-              height: "50px",
-              minWidth: "50px",
-              minHeight: "50px",
+              width: "56px",
+              height: "56px",
+              minWidth: "56px",
+              minHeight: "56px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -140,16 +166,16 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
           </button>
         )}
 
-        {/* Floating Navigation - Right */}
+        {/* Floating Navigation - Right (not on last page) */}
         {currentPage < photos.length - 1 && (
           <button
             onClick={() => paginate(1)}
             className="fixed right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white rounded-full shadow-lg hover:bg-white/30 transition-all touch-manipulation animate-pulse z-50"
             style={{
-              width: "50px",
-              height: "50px",
-              minWidth: "50px",
-              minHeight: "50px",
+              width: "56px",
+              height: "56px",
+              minWidth: "56px",
+              minHeight: "56px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -161,24 +187,25 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
           </button>
         )}
 
-        {/* Last Page - Continue to Heart */}
+        {/* Last Page - Heart Button to Continue */}
         {currentPage === photos.length - 1 && (
           <button
-            onClick={handleLastPageNext}
-            className="fixed right-4 top-1/2 -translate-y-1/2 bg-[#ff3377] text-white rounded-full shadow-lg hover:scale-110 transition-all touch-manipulation animate-pulse z-50"
+            onClick={handleContinueToHeart}
+            className="fixed right-4 top-1/2 -translate-y-1/2 bg-[#ff3377] text-white rounded-full shadow-lg hover:scale-110 transition-all touch-manipulation z-50"
             style={{
-              width: "50px",
-              height: "50px",
-              minWidth: "50px",
-              minHeight: "50px",
+              width: "56px",
+              height: "56px",
+              minWidth: "56px",
+              minHeight: "56px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 0 20px rgba(255, 51, 119, 0.6)",
+              boxShadow: "0 0 30px rgba(255, 51, 119, 0.8)",
+              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
             }}
             aria-label="Continue to heart"
           >
-            <ChevronRight size={28} />
+            <Heart size={28} fill="white" />
           </button>
         )}
       </div>

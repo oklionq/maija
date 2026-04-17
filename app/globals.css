@@ -9,6 +9,7 @@
   --font-dancing: var(--font-dancing);
 }
 
+html,
 body {
   background: #000000;
   color: #ffffff;
