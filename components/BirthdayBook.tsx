@@ -58,7 +58,7 @@ export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
   };
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] flex flex-col items-center justify-center">
+    <div className="fixed inset-0 w-full h-[100dvh] flex flex-col items-center justify-center z-30">
       {/* Top Header Pill with Glow */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
