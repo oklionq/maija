@@ -27,192 +27,85 @@ interface BirthdayBookProps {
 }
 
 export default function BirthdayBook({ onComplete }: BirthdayBookProps) {
-  const [currentPage, setCurrentPage] = useState(0);
-  const [direction, setDirection] = useState(0);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
-  const paginate = (newDirection: number) => {
-    const newPage = currentPage + newDirection;
-    if (newPage >= 0 && newPage < photos.length) {
-      setDirection(newDirection);
-      setCurrentPage(newPage);
+  const nextPhoto = () => {
+    if (currentPhotoIndex < photos.length - 1) {
+      setCurrentPhotoIndex((prev) => prev + 1);
     }
   };
 
-  const handleContinueToHeart = () => {
-    onComplete();
-  };
-
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 50 : -50,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (direction: number) => ({
-      x: direction > 0 ? -50 : 50,
-      opacity: 0,
-    }),
+  const prevPhoto = () => {
+    if (currentPhotoIndex > 0) {
+      setCurrentPhotoIndex((prev) => prev - 1);
+    }
   };
 
   return (
     <div className="fixed inset-0 w-full h-[100dvh] flex flex-col items-center justify-center z-30">
-      {/* Top Header Pill with Glow */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        transition={{ duration: 0.8 }}
-        className="fixed top-8 z-50 bg-white/95 backdrop-blur-sm px-8 py-4 rounded-full shadow-lg"
-        style={{
-          boxShadow: "0 0 30px rgba(255, 51, 119, 0.4), 0 10px 40px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <motion.h1
-          className="font-[family-name:var(--font-dancing)] text-3xl md:text-4xl text-gray-900"
-          animate={{
-            textShadow: [
-              "0 0 10px rgba(255, 51, 119, 0.3)",
-              "0 0 20px rgba(255, 51, 119, 0.5)",
-              "0 0 10px rgba(255, 51, 119, 0.3)",
-            ],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
+      {/* Top Header */}
+      <div className="fixed top-8 z-50 rounded-full bg-white px-6 py-3 shadow-lg">
+        <h1 className="font-[family-name:var(--font-dancing)] text-2xl md:text-3xl text-gray-900">
           Happy Birthday Maija! ✨
-        </motion.h1>
-      </motion.div>
+        </h1>
+      </div>
 
-      {/* Photo Card Container */}
+      {/* Main Card Container */}
       <div className="relative flex items-center justify-center w-full h-full">
-        <AnimatePresence initial={false} custom={direction} mode="wait">
+        <AnimatePresence mode="wait">
           <motion.div
-            key={currentPage}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{
-              x: { type: "spring", stiffness: 300, damping: 30 },
-              opacity: { duration: 0.2 },
-            }}
-            className="absolute"
-            style={{
-              willChange: "transform, opacity",
-              transform: "translateZ(0)",
-              WebkitTransform: "translate3d(0, 0, 0)",
-            }}
+            key={currentPhotoIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute flex items-center justify-center"
           >
             {/* Polaroid-style Card */}
-            <div
-              className="bg-white p-2 rounded-xl shadow-2xl"
-              style={{
-                width: "min(320px, 85vw)",
-                boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
-              }}
-            >
-              <div
-                style={{
-                  aspectRatio: "3 / 4",
-                  overflow: "hidden",
-                  borderRadius: "0.5rem",
-                }}
-              >
-                <img
-                  src={photos[currentPage].imageUrl}
-                  alt={`Memory ${currentPage + 1}`}
-                  className="w-full h-full"
-                  loading="eager"
-                  style={{
-                    objectFit: "cover",
-                    display: "block",
-                    transform: "translateZ(0)",
-                    WebkitTransform: "translate3d(0, 0, 0)",
-                    pointerEvents: "none",
-                  }}
-                />
-              </div>
+            <div className="bg-white p-2 rounded-2xl shadow-[0_0_50px_rgba(255,51,119,0.3)] max-w-[90vw] md:max-w-[400px] w-full aspect-[3/4]">
+              <img
+                src={photos[currentPhotoIndex].imageUrl}
+                alt={`Memory ${currentPhotoIndex + 1}`}
+                className="w-full h-full object-cover rounded-xl"
+                loading="eager"
+              />
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Floating Navigation - Left */}
-        {currentPage > 0 && (
+        {/* Navigation Buttons */}
+        {currentPhotoIndex > 0 && (
           <button
-            onClick={() => paginate(-1)}
-            className="fixed left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white rounded-full shadow-lg hover:bg-white/30 transition-all touch-manipulation z-50"
-            style={{
-              width: "56px",
-              height: "56px",
-              minWidth: "56px",
-              minHeight: "56px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "2px solid rgba(255, 255, 255, 0.3)",
-            }}
-            aria-label="Previous photo"
+            onClick={prevPhoto}
+            aria-label="Previous Photo"
+            className="fixed left-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-md bg-white/20 border border-white/30 text-white z-50 shadow-lg touch-manipulation"
           >
-            <ChevronLeft size={28} />
+            <ChevronLeft size={32} />
           </button>
         )}
 
-        {/* Floating Navigation - Right (not on last page) */}
-        {currentPage < photos.length - 1 && (
+        {currentPhotoIndex < photos.length - 1 ? (
           <button
-            onClick={() => paginate(1)}
-            className="fixed right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white rounded-full shadow-lg hover:bg-white/30 transition-all touch-manipulation animate-pulse z-50"
-            style={{
-              width: "56px",
-              height: "56px",
-              minWidth: "56px",
-              minHeight: "56px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "2px solid rgba(255, 255, 255, 0.3)",
-            }}
-            aria-label="Next photo"
+            onClick={nextPhoto}
+            aria-label="Next Photo"
+            className="fixed right-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-md bg-white/20 border border-white/30 text-white z-50 shadow-lg touch-manipulation"
           >
-            <ChevronRight size={28} />
+            <ChevronRight size={32} />
           </button>
-        )}
-
-        {/* Last Page - Heart Button to Continue */}
-        {currentPage === photos.length - 1 && (
+        ) : (
           <button
-            onClick={handleContinueToHeart}
-            className="fixed right-4 top-1/2 -translate-y-1/2 bg-[#ff3377] text-white rounded-full shadow-lg hover:scale-110 transition-all touch-manipulation z-50"
-            style={{
-              width: "56px",
-              height: "56px",
-              minWidth: "56px",
-              minHeight: "56px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 0 30px rgba(255, 51, 119, 0.8)",
-              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-            }}
-            aria-label="Continue to heart"
+            onClick={onComplete}
+            aria-label="Continue"
+            className="fixed right-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-md bg-[#ff3377] border border-white/30 text-white z-50 shadow-[0_0_30px_rgba(255,51,119,0.8)] touch-manipulation animate-pulse"
           >
             <Heart size={28} fill="white" />
           </button>
         )}
       </div>
 
-      {/* Page Counter */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 text-white/80 font-[family-name:var(--font-vt323)] text-xl z-50">
-        {currentPage + 1} / {photos.length}
+      {/* Progress Counter */}
+      <div className="fixed bottom-8 text-white/80 font-[family-name:var(--font-vt323)] text-xl z-50 tracking-widest">
+        {currentPhotoIndex + 1} / {photos.length}
       </div>
     </div>
   );
